@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" xmlns:th="http://www.thymeleaf.org">
+    <title>Котировки акций</title>
+</head>
+<body>
+
+<table>
+    <thead>
+    <tr>
+        <th scope="col">Название компании</th>
+        <th scope="col">Стоимость покупки</th>
+        <th scope="col">Стоимость продажи</th>
+        <th scope="col">Количество доступных акций</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="stock : ${stocks}">
+        <td th:text="${stock.getCompanyName()}">companyName</td>
+        <td th:text="${stock.getPurchasePrice()}">purchasePrice</td>
+        <td th:text="${stock.getSellPrice()}">sellPrice</td>
+        <td th:text="${stock.getQuantity()}">quantity</td>
+    </tr>
+    </tbody>
+</table>
+
+<br>
+
+
+<label for="company">Акции какой компании Вы желаете приобрести?</label>
+<select id="company" name="company" onchange="calculateStockPurchasePrice(); checkEnoughBalance()">
+    <option th:each="stock : ${stocks}"
+            th:value="${stock.getCompanyName()} + '|' + ${stock.getPurchasePrice()}"
+            th:text="${stock.getCompanyName()} + ' (' + ${stock.getPurchasePrice()} + ')'">
+        companyNameAndStockPurchasePrice
+    </option>
+</select>
+<br>
+<br>
+<label for="amount">Какое количество акций вы желаете приобрести?</label>
+<input type="number" min="1" name="amount" id="amount"
+       onchange="calculateStockPurchasePrice(); checkEnoughBalance()">
+<p th:text="'Комиссия брокера составляет ' + ${account.getCommission()} +
+        '% (включена в сделку).'"
+   th:value="${account.getCommission()}"></p>
+<input type="hidden" id="commission" th:value="${account.getCommission()}">
+<p id="purchase-price">Стоимость сделки:</p>
+<input type="hidden" id="purchase-price-holder">
+<p th:text="'Баланс вашего аккаунта составляет ' + ${account.getBalance()} + ' рублей.'">balance</p>
+<input type="hidden" id="balance-holder" th:value="${account.getBalance()}">
+<script src="/js/calculatePurchasePrice.js"></script>
+<script src="/js/checkEnoughBalance.js"></script>
+
+<p class="hidden" id="message">
+
+</body>
+</html>
