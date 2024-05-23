@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Ваш профиль</title>
+</head>
+<body>
+
+<p th:text="'Ваш текущий тарифный план: ' + ${account.getStatus()} + '.'">status</p>
+<div th:switch="${account.getStatus().ordinal()}">
+    <div th:case="${0}">
+        <p>Комиссия брокера при текущем тарифном плане составляет от 4 до 5%.</p>
+    </div>
+    <div th:case="${1}">
+        <p>Комиссия брокера при текущем тарифном плане составляет от 2 до 3.99%.</p>
+    </div>
+    <div th:case="${2}">
+        <p>Комиссия брокера при текущем тарифном плане составляет от 0.5 до 1.99%.</p>
+    </div>
+</div>
+<p th:text="'Ваша комиссия составляет ' + ${account.getCommission()}">commission</p>
+<p th:text="'Ваш текущий баланс: ' + ${account.getBalance()} + ' рублей.'">balance</p>
+
+<div th:switch="${account.getStocks().isEmpty()}">
+    <div th:case="${true}">
+        <p>Вы ещё не приобрели ни одной акции.</p>
+    </div>
+    <div th:case="*">
+        <b>Список ваших акций: </b>
+        <br><br>
+        <table>
+            <thead>
+            <tr>
+                <th scope="col">Название компании</th>
+                <th scope="col">Количество приобретённых акций</th>
+                <th scope="col">Стоимость акции при продаже (без комиссии)</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="stock, iter : ${account.getStocks()}">
+                <td th:text="${stock.getCompanyName()}">companyName</td>
+                <td th:text="${quantities.get(iter.index).getQuantityHeld()}">quantityHeld</td>
+                <td th:text="${stock.getSellPrice()}">sellPrice</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<br>
+
+<a href="/stocks" th:text="'Перейти к списку акций'">text</a>
+
+</body>
+</html>
