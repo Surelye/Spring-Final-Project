@@ -7,8 +7,10 @@ import ssu.ru.stocks.models.AccountStock;
 import ssu.ru.stocks.repositories.AccountStockRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
+@Transactional
 public class AccountStockService {
 
     private final AccountStockRepository accountStockRepository;
@@ -21,5 +23,15 @@ public class AccountStockService {
     @Transactional(readOnly = true)
     public List<AccountStock> getAllByAccountId(int accountId) {
         return accountStockRepository.findAllByAccountId(accountId);
+    }
+
+    public void saveOrUpdate(int accId, int stockId, int quantity) {
+        Optional<AccountStock> accountStock = accountStockRepository.findByAccountIdAndStockId(accId, stockId);
+        if (accountStock.isPresent()) {
+            accountStockRepository.updateStockQuantity(accId, stockId, quantity);
+        } else {
+            AccountStock accSt = new AccountStock(accId, stockId, quantity);
+            accountStockRepository.save(accSt);
+        }
     }
 }

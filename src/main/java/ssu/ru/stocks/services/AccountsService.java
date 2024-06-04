@@ -10,6 +10,7 @@ import ssu.ru.stocks.repositories.AccountsRepository;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class AccountsService {
 
     private final AccountsRepository accountsRepository;
@@ -17,6 +18,11 @@ public class AccountsService {
     @Autowired
     public AccountsService(AccountsRepository accountsRepository) {
         this.accountsRepository = accountsRepository;
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<Account> getAccountById(int id) {
+        return accountsRepository.findById(id);
     }
 
     @Transactional(readOnly = true)
@@ -29,5 +35,9 @@ public class AccountsService {
         Optional<Account> account = accountsRepository.findByUsername(username);
         account.ifPresent(acc -> Hibernate.initialize(acc.getStocks()));
         return account;
+    }
+
+    public void updateBalance(int id, double amount) {
+        accountsRepository.updateBalance(id, amount);
     }
 }
