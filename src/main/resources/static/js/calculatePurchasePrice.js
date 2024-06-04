@@ -1,5 +1,5 @@
 function calculateStockPurchasePrice() {
-    const companyAndPrice = document.getElementById('company').value;
+    const companyAndPrice = document.getElementById('companyAndPrice').value;
     const amount = document.getElementById('amount').value;
     const commission = document.getElementById('commission').value;
 

@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8" xmlns:th="http://www.thymeleaf.org">
     <title>Котировки акций</title>
+    <link rel="stylesheet" href="/css/top_right.css">
 </head>
 <body>
 
@@ -27,9 +28,9 @@
 
 <br>
 
-
-<label for="company">Акции какой компании Вы желаете приобрести?</label>
-<select id="company" name="company" onchange="calculateStockPurchasePrice(); checkEnoughBalance()">
+<form th:method="POST" th:action="@{/stocks/{id}(id=${account.getId()})}">
+<label for="companyAndPrice">Акции какой компании Вы желаете приобрести?</label>
+<select id="companyAndPrice" name="companyAndPrice" onchange="calculateStockPurchasePrice(); checkEnoughBalance()">
     <option th:each="stock : ${stocks}"
             th:value="${stock.getCompanyName()} + '|' + ${stock.getPurchasePrice()}"
             th:text="${stock.getCompanyName()} + ' (' + ${stock.getPurchasePrice()} + ')'">
@@ -41,6 +42,8 @@
 <label for="amount">Какое количество акций вы желаете приобрести?</label>
 <input type="number" min="1" name="amount" id="amount"
        onchange="calculateStockPurchasePrice(); checkEnoughBalance()">
+    <input type="submit" value="Приобрести">
+</form>
 <p th:text="'Комиссия брокера составляет ' + ${account.getCommission()} +
         '% (включена в сделку).'"
    th:value="${account.getCommission()}"></p>
@@ -51,6 +54,8 @@
 <input type="hidden" id="balance-holder" th:value="${account.getBalance()}">
 <script src="/js/calculatePurchasePrice.js"></script>
 <script src="/js/checkEnoughBalance.js"></script>
+
+<a class="top-right" href="/profile" th:text="'Перейти к профилю'">text</a>
 
 <p class="hidden" id="message">
 

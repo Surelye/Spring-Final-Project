@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Ваш профиль</title>
+    <link rel="stylesheet" href="/css/top_right.css">
 </head>
 <body>
 
@@ -50,6 +51,10 @@
 <br>
 
 <a href="/stocks" th:text="'Перейти к списку акций'">text</a>
+
+<form class="top-right" th:action="@{/logout}" th:method="POST">
+    <input type="submit" value="Logout">
+</form>
 
 </body>
 </html>
