@@ -1,13 +1,12 @@
 package ssu.ru.stocks.models;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -39,4 +38,15 @@ public class Account {
     @Enumerated(EnumType.ORDINAL)
     @Column(name = "status")
     private Status status;
+
+    @DecimalMin(value = "0.5", message = "Минимальное значение комиссии составляет 0.5%!")
+    @Max(value = 5, message = "Максимальное значение комиссии составляет 5%!")
+    @Column(name = "commission")
+    private double commission;
+
+    @ManyToMany
+    @JoinTable(name = "Account_Stock",
+            joinColumns = @JoinColumn(name = "account_id"),
+            inverseJoinColumns = @JoinColumn(name = "stock_id"))
+    private List<Stock> stocks;
 }
