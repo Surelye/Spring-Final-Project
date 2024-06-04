@@ -6,6 +6,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ssu.ru.stocks.models.Account;
 import ssu.ru.stocks.services.AccountsService;
@@ -36,5 +38,11 @@ public class StocksController {
             return "stocks/index";
         }
         throw new UsernameNotFoundException(username);
+    }
+
+    @PostMapping("{id}")
+    public String purchase(@PathVariable int id, String companyAndPrice, int amount) {
+        stocksService.purchaseStocks(id, companyAndPrice.split("\\|")[0], amount);
+        return "redirect:/stocks";
     }
 }
