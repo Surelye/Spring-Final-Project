@@ -10,6 +10,12 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
+import ssu.ru.stocks.security.ApplicationAuthenticationFailureHandler;
+import ssu.ru.stocks.security.ApplicationAuthenticationSuccessHandler;
+import ssu.ru.stocks.security.ApplicationLogoutHandler;
 import ssu.ru.stocks.services.AccountDetailsService;
 
 @Configuration
@@ -32,9 +38,12 @@ public class SecurityConfig {
                         .loginPage("/auth/login")
                         .loginProcessingUrl("/process_login")
                         .defaultSuccessUrl("/stocks", true)
-                        .failureUrl("/auth/login?error=true"))
+                        .failureUrl("/auth/login?error=true")
+                        .successHandler(authenticationSuccessHandler())
+                        .failureHandler(authenticationFailureHandler()))
                 .logout(logout -> logout.logoutUrl("/logout")
-                        .logoutSuccessUrl("/auth/login"));
+                        .logoutSuccessUrl("/auth/login")
+                        .addLogoutHandler(logoutHandler()));
 
         return http.build();
     }
@@ -46,6 +55,21 @@ public class SecurityConfig {
         authenticationManagerBuilder.userDetailsService(accountDetailsService)
                 .passwordEncoder(passwordEncoder());
         return authenticationManagerBuilder.build();
+    }
+
+    @Bean
+    public AuthenticationSuccessHandler authenticationSuccessHandler() {
+        return new ApplicationAuthenticationSuccessHandler();
+    }
+
+    @Bean
+    public AuthenticationFailureHandler authenticationFailureHandler() {
+        return new ApplicationAuthenticationFailureHandler();
+    }
+
+    @Bean
+    public LogoutHandler logoutHandler() {
+        return new ApplicationLogoutHandler();
     }
 
     @Bean
