@@ -9,10 +9,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import ssu.ru.stocks.models.Account;
+import ssu.ru.stocks.models.Stock;
 import ssu.ru.stocks.services.AccountsService;
 import ssu.ru.stocks.services.StocksService;
 
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -33,16 +36,31 @@ public class StocksController {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<Account> account = accountsService.getAccountByUsername(username);
         if (account.isPresent()) {
-            model.addAttribute("stocks", stocksService.getStocks());
+            List<Stock> stocks = stocksService.getStocks();
+            stocks.forEach(s -> System.out.printf("%s: %d%n", s.getCompanyName(), s.getQuantity()));
+            boolean fullBuyout = stocks.stream().noneMatch(s -> s.getQuantity() != 0);
+            System.out.println(fullBuyout);
+            model.addAttribute("fullBuyout", fullBuyout);
+            if (!fullBuyout) {
+                model.addAttribute("stocks", stocks);
+            }
             model.addAttribute("account", account.get());
+            model.addAttribute("isOpen", stocksService.isStockExchangeAvailable());
             return "stocks/index";
         }
         throw new UsernameNotFoundException(username);
     }
 
-    @PostMapping("{id}")
+    @PostMapping("{id}/purchase")
     public String purchase(@PathVariable int id, String companyAndPrice, int amount) {
         stocksService.purchaseStocks(id, companyAndPrice.split("\\|")[0], amount);
         return "redirect:/stocks";
+    }
+
+    @PostMapping("{id}/sell")
+    public String sell(@PathVariable int id, @RequestParam("id") List<Integer> stockIds,
+                       @RequestParam("amount") List<Integer> amounts) {
+        stocksService.sellStocks(id, stockIds, amounts);
+        return "redirect:/profile";
     }
 }
