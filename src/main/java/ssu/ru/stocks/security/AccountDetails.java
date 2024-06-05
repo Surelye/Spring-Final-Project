@@ -50,7 +50,6 @@ public class AccountDetails implements UserDetails {
         return true;
     }
 
-    // Нужно, чтобы получать данные аутентифицированного пользователя
     public Account getAccount() {
         return account;
     }
