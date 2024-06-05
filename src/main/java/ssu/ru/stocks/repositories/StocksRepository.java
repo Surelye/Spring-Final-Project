@@ -12,6 +12,6 @@ public interface StocksRepository extends JpaRepository<Stock, Integer> {
     Optional<Stock> findByCompanyName(String companyName);
 
     @Modifying
-    @Query("UPDATE Stock s SET s.quantity = s.quantity - :amount WHERE s.id = :id")
+    @Query("UPDATE Stock s SET s.quantity = :amount WHERE s.id = :id")
     void updateStockQuantity(@Param("id") int id, @Param("amount") int amount);
 }

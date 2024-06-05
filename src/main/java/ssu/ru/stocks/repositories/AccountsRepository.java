@@ -14,4 +14,8 @@ public interface AccountsRepository extends JpaRepository<Account, Integer> {
     @Modifying
     @Query("UPDATE Account a SET a.balance = :balance WHERE a.id = :id")
     void updateBalance(@Param("id") int id, @Param("balance") double balance);
+
+    @Modifying
+    @Query("UPDATE Account a SET a.commission = :commission WHERE a.id = :id")
+    void updateCommission(@Param("id") int id, @Param("commission") double commission);
 }
