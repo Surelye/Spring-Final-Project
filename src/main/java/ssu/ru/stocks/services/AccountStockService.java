@@ -27,11 +27,13 @@ public class AccountStockService {
 
     public void saveOrUpdate(int accId, int stockId, int quantity) {
         Optional<AccountStock> accountStock = accountStockRepository.findByAccountIdAndStockId(accId, stockId);
+        AccountStock accSt;
         if (accountStock.isPresent()) {
-            accountStockRepository.updateStockQuantity(accId, stockId, quantity);
+            accSt = accountStock.get();
+            accSt.setQuantityHeld(accSt.getQuantityHeld() + quantity);
         } else {
-            AccountStock accSt = new AccountStock(accId, stockId, quantity);
-            accountStockRepository.save(accSt);
+            accSt = new AccountStock(accId, stockId, quantity);
         }
+        accountStockRepository.save(accSt);
     }
 }

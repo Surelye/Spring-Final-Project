@@ -1,23 +1,51 @@
 package ssu.ru.stocks.services;
 
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ssu.ru.stocks.models.Account;
 import ssu.ru.stocks.repositories.AccountsRepository;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Random;
+
+import static ssu.ru.stocks.models.Status.*;
+import static ssu.ru.stocks.util.Constants.*;
 
 @Service
 @Transactional
+@Slf4j
 public class AccountsService {
 
     private final AccountsRepository accountsRepository;
+    private final Random random;
 
     @Autowired
-    public AccountsService(AccountsRepository accountsRepository) {
+    public AccountsService(AccountsRepository accountsRepository, Random random) {
         this.accountsRepository = accountsRepository;
+        this.random = random;
+    }
+
+    @Scheduled(cron = "0 0 0 * * *", zone = "Europe/Moscow")
+    public void updateCommission() {
+        List<Account> accounts = accountsRepository.findAll();
+        for (Account account : accounts) {
+            if (account.getStatus() == STARTER) {
+                accountsRepository.updateCommission(account.getId(),
+                        STARTER_LB + random.nextDouble(STARTER_UB - STARTER_LB));
+            } else if (account.getStatus() == PRO) {
+                accountsRepository.updateCommission(account.getId(),
+                        PRO_LB + random.nextDouble(PRO_UB - PRO_LB));
+            } else if (account.getStatus() == PREMIUM) {
+                accountsRepository.updateCommission(account.getId(),
+                        PREMIUM_LB + random.nextDouble(PREMIUM_UB - PREMIUM_LB));
+            }
+        }
+        log.info("Произшло обновление комиссионного процента");
     }
 
     @Transactional(readOnly = true)
