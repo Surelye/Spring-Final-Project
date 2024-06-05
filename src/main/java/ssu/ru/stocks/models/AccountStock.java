@@ -1,6 +1,10 @@
 package ssu.ru.stocks.models;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.IdClass;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,7 +28,7 @@ public class AccountStock {
     @Column(name = "stock_id")
     private int stockId;
 
-    @Min(value = 1, message = "Количество акций во владении должно быть больше нуля!")
+    @Min(value = 0, message = "Количество акций во владении должно быть >= 0!")
     @Column(name = "quantity_held")
     private int quantityHeld;
 }
