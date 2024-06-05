@@ -7,6 +7,7 @@
 </head>
 <body>
 
+<p th:text="'Имя пользователя: ' + ${account.getUsername()} + '.'">username</p>
 <p th:text="'Ваш текущий тарифный план: ' + ${account.getStatus()} + '.'">status</p>
 <div th:switch="${account.getStatus().ordinal()}">
     <div th:case="${0}">
@@ -19,8 +20,10 @@
         <p>Комиссия брокера при текущем тарифном плане составляет от 0.5 до 1.99%.</p>
     </div>
 </div>
-<p th:text="'Ваша комиссия составляет ' + ${account.getCommission()}">commission</p>
-<p th:text="'Ваш текущий баланс: ' + ${account.getBalance()} + ' рублей.'">balance</p>
+<p th:text="'Ваша комиссия составляет ' + ${#numbers.formatDecimal(account.getCommission(), 1, 2)} + '%.'"
+   th:value="${account.getCommission()}" id="commission">
+    commission</p>
+<p th:text="'Ваш текущий баланс: ' + ${#numbers.formatDecimal(account.getBalance(), 1, 2)} + ' рублей.'">balance</p>
 
 <div th:switch="${account.getStocks().isEmpty()}">
     <div th:case="${true}">
@@ -29,26 +32,45 @@
     <div th:case="*">
         <b>Список ваших акций: </b>
         <br><br>
-        <table>
-            <thead>
-            <tr>
-                <th scope="col">Название компании</th>
-                <th scope="col">Количество приобретённых акций</th>
-                <th scope="col">Стоимость акции при продаже (без комиссии)</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="stock, iter : ${account.getStocks()}">
-                <td th:text="${stock.getCompanyName()}">companyName</td>
-                <td th:text="${quantities.get(iter.index).getQuantityHeld()}">quantityHeld</td>
-                <td th:text="${stock.getSellPrice()}">sellPrice</td>
-            </tr>
-            </tbody>
-        </table>
+        <form th:method="POST" th:action="@{/stocks/{id}/sell(id=${account.getId()})}">
+            <table style="text-align: center">
+                <thead>
+                <tr>
+                    <th scope="col">Название компании</th>
+                    <th scope="col">Количество приобретённых акций</th>
+                    <th scope="col">Стоимость акции при продаже (без комиссии)</th>
+                    <th th:if="${isOpen}" scope="col"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="stock, iter : ${account.getStocks()}">
+                    <td th:text="${stock.getCompanyName()}">companyName</td>
+                    <td th:text="${quantities.get(iter.index).getQuantityHeld()}">quantityHeld</td>
+                    <td th:id="'stockPrice' + ${stock.getId()}" th:value="${stock.getSellPrice()}"
+                        th:text="${#numbers.formatDecimal(stock.getSellPrice(), 1, 2)}">sellPrice
+                    </td>
+                    <th th:if="${isOpen}">
+                        <input type="hidden" name="id" th:value="${stock.getId()}">
+                        <input type="number" min="1" th:max="${quantities.get(iter.index).getQuantityHeld()}"
+                               th:id="'amount' + ${stock.getId()}" name="amount"
+                               onchange="calculateSellProfit()">
+                    </th>
+                </tr>
+                </tbody>
+            </table>
+            <div th:if="${isOpen}">
+                <br>
+                <input type="submit" value="Продать">
+            </div>
+        </form>
     </div>
 </div>
 
-<br>
+<div th:if="${!quantities.isEmpty()}">
+    <p id="sell-profit">Ваша выручка:</p>
+    <input type="hidden" id="sell-profit-holder">
+    <script src="/js/calculateSellProfit.js"></script>
+</div>
 
 <a href="/stocks" th:text="'Перейти к списку акций'">text</a>
 
