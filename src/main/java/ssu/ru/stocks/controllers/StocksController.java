@@ -37,9 +37,7 @@ public class StocksController {
         Optional<Account> account = accountsService.getAccountByUsername(username);
         if (account.isPresent()) {
             List<Stock> stocks = stocksService.getStocks();
-            stocks.forEach(s -> System.out.printf("%s: %d%n", s.getCompanyName(), s.getQuantity()));
             boolean fullBuyout = stocks.stream().noneMatch(s -> s.getQuantity() != 0);
-            System.out.println(fullBuyout);
             model.addAttribute("fullBuyout", fullBuyout);
             if (!fullBuyout) {
                 model.addAttribute("stocks", stocks);
