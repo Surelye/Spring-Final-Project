@@ -8,6 +8,8 @@ import ssu.ru.stocks.models.Account;
 import ssu.ru.stocks.models.Stock;
 import ssu.ru.stocks.repositories.StocksRepository;
 
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
@@ -77,8 +79,7 @@ public class StocksService {
     }
 
     public boolean isStockExchangeAvailable() {
-        return true;
-//        int hour = LocalTime.now(ZoneId.of("Europe/Moscow")).getHour();
-//        return (10 <= hour && hour < 22);
+        int hour = LocalTime.now(ZoneId.of("Europe/Moscow")).getHour();
+        return (10 <= hour && hour < 22);
     }
 }
