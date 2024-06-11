@@ -1,5 +1,7 @@
 package ssu.ru.stocks.controllers;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -20,6 +22,7 @@ import java.util.Optional;
 
 @Controller
 @RequestMapping("/stocks")
+@Tag(name = "Stocks Controller", description = "Controller for performing operations with stocks")
 public class StocksController {
 
     private final StocksService stocksService;
@@ -32,6 +35,7 @@ public class StocksController {
     }
 
     @GetMapping
+    @Operation(summary = "List stocks", description = "Returns the list of all stocks")
     public String index(Model model) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<Account> account = accountsService.getAccountByUsername(username);
@@ -50,15 +54,17 @@ public class StocksController {
     }
 
     @PostMapping("{id}/purchase")
+    @Operation(summary = "Purchase a stock", description = "Perform a purchase of one stock")
     public String purchase(@PathVariable int id, String companyAndPrice, int amount) {
         stocksService.purchaseStocks(id, companyAndPrice.split("\\|")[0], amount);
-        return "redirect:/stocks";
+        return "redirect:stocks";
     }
 
     @PostMapping("{id}/sell")
+    @Operation(summary = "Sell stocks", description = "Perform a selling of stocks")
     public String sell(@PathVariable int id, @RequestParam("id") List<Integer> stockIds,
                        @RequestParam("amount") List<Integer> amounts) {
         stocksService.sellStocks(id, stockIds, amounts);
-        return "redirect:/profile";
+        return "redirect:profile";
     }
 }

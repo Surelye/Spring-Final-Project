@@ -1,5 +1,7 @@
 package ssu.ru.stocks.controllers;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -13,6 +15,7 @@ import ssu.ru.stocks.services.StocksService;
 import java.util.Optional;
 
 @Controller
+@Tag(name = "Account Controller", description = "Account Controller for performing account operations")
 public class AccountController {
 
     private final AccountsService accountsService;
@@ -28,6 +31,7 @@ public class AccountController {
     }
 
     @GetMapping("/profile")
+    @Operation(summary = "Show Account", description = "Returns a view with account details")
     public String showAccount(Model model) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<Account> accountToShow = accountsService.getAccountByUsernameEagerly(username);
@@ -36,8 +40,8 @@ public class AccountController {
             model.addAttribute("quantities",
                     accountStockService.getAllByAccountId(accountToShow.get().getId()));
             model.addAttribute("isOpen", stocksService.isStockExchangeAvailable());
-            return "/profile/show";
+            return "profile/show";
         }
-        return "redirect:/stocks/index";
+        return "redirect:stocks/index";
     }
 }
