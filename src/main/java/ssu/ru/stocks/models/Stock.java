@@ -29,7 +29,7 @@ public class Stock {
     private int id;
 
     @NotEmpty
-    @Size(min = 1, max = 50, message = "Название компании должно быть длиной от 3 до 20 символов!")
+    @Size(min = 3, max = 50, message = "Название компании должно быть длиной от 3 до 20 символов!")
     @Column(name = "company_name")
     private String companyName;
 

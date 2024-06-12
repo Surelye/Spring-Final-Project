@@ -32,7 +32,7 @@ public class StocksService {
 
     @Transactional(readOnly = true)
     public List<Stock> getStocks() {
-        return stocksRepository.findAll();
+        return stocksRepository.findAllByOrderByCompanyName();
     }
 
     @Transactional
@@ -43,7 +43,7 @@ public class StocksService {
             Optional<Stock> stock = stocksRepository.findByCompanyName(companyName);
             if (stock.isPresent()) {
                 Stock st = stock.get();
-                double dealPrice = st.getPurchasePrice() * amount * (1 + (ac.getCommission() / 100));
+                double dealPrice = computeDealPrice(st.getPurchasePrice(), amount, ac.getCommission());
                 if (ac.getBalance() < dealPrice || st.getQuantity() < amount) {
                     return;
                 }
@@ -60,11 +60,7 @@ public class StocksService {
         Optional<Account> account = accountsService.getAccountById(accountId);
         if (account.isPresent()) {
             Account ac = account.get();
-            double profit = (1 - (ac.getCommission() / 100)) *
-                    IntStream.range(0, amounts.size())
-                            .mapToDouble(i -> (amounts.get(i) == null) ? 0 :
-                                    amounts.get(i) * ac.getStocks().get(i).getSellPrice())
-                            .sum();
+            double profit = computeProfit(ac, amounts);
             for (int i = 0; i < amounts.size(); ++i) {
                 if (amounts.get(i) != null) {
                     stocksRepository.updateStockQuantity(stockIds.get(i),
@@ -78,8 +74,21 @@ public class StocksService {
         }
     }
 
+    public double computeDealPrice(double purchasePrice, int amount, double commission) {
+        return purchasePrice * amount * (1 + commission / 100);
+    }
+
+    public double computeProfit(Account ac, List<Integer> amounts) {
+        return (1 - (ac.getCommission() / 100)) *
+                IntStream.range(0, amounts.size())
+                        .mapToDouble(i -> (amounts.get(i) == null) ? 0 :
+                                amounts.get(i) * ac.getStocks().get(i).getSellPrice())
+                        .sum();
+    }
+
     public boolean isStockExchangeAvailable() {
-        int hour = LocalTime.now(ZoneId.of("Europe/Moscow")).getHour();
-        return (10 <= hour && hour < 22);
+        return true;
+//        int hour = LocalTime.now(ZoneId.of("Europe/Moscow")).getHour();
+//        return (10 <= hour && hour < 22);
     }
 }

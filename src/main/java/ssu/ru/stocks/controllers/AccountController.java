@@ -15,7 +15,7 @@ import ssu.ru.stocks.services.StocksService;
 import java.util.Optional;
 
 @Controller
-@Tag(name = "Account Controller", description = "Account Controller for performing account operations")
+@Tag(name = "Account Controller", description = "Controller for performing account operations")
 public class AccountController {
 
     private final AccountsService accountsService;
@@ -42,6 +42,6 @@ public class AccountController {
             model.addAttribute("isOpen", stocksService.isStockExchangeAvailable());
             return "profile/show";
         }
-        return "redirect:stocks/index";
+        return "redirect:/stocks/index";
     }
 }

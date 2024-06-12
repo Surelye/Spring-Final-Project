@@ -57,7 +57,7 @@ public class StocksController {
     @Operation(summary = "Purchase a stock", description = "Perform a purchase of one stock")
     public String purchase(@PathVariable int id, String companyAndPrice, int amount) {
         stocksService.purchaseStocks(id, companyAndPrice.split("\\|")[0], amount);
-        return "redirect:stocks";
+        return "redirect:/stocks";
     }
 
     @PostMapping("{id}/sell")
@@ -65,6 +65,6 @@ public class StocksController {
     public String sell(@PathVariable int id, @RequestParam("id") List<Integer> stockIds,
                        @RequestParam("amount") List<Integer> amounts) {
         stocksService.sellStocks(id, stockIds, amounts);
-        return "redirect:profile";
+        return "redirect:/profile";
     }
 }

@@ -1,80 +1,160 @@
-/* Body Styles */
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    background: linear-gradient(to right, #4e54c8, #8f94fb);
     margin: 0;
     padding: 0;
-}
-
-/* Table Styles */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-}
-
-th, td {
-    border: 1px solid #ddd;
-    padding: 8px;
-}
-
-th {
-    background-color: #f2f2f2;
-    font-weight: bold;
-}
-
-/* Form Styles */
-form {
-    margin-bottom: 20px;
-}
-
-label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-}
-
-select, input[type="number"], input[type="submit"] {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-}
-
-input[type="submit"] {
-    background-color: #4CAF50;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     color: white;
-    border: none;
-    cursor: pointer;
 }
 
-input[type="submit"]:hover {
-    background-color: #45a049;
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    /* padding: 10px 20px; */
+    background-color: #01053a;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+
 }
 
-/* Alert Styles */
-.alert {
-    background-color: #f44336;
-    color: white;
-    padding: 10px;
-    margin-bottom: 20px;
-    border-radius: 4px;
+.logo {
+    height: 70px;
 }
 
-/* Link Styles */
-a.top-right {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    padding: 10px;
-    background-color: #4CAF50;
+.button {
+    padding: 10px 20px;
+    background-color: #410858;
     color: white;
     text-decoration: none;
     border-radius: 4px;
 }
 
-a.top-right:hover {
-    background-color: #45a049;
+.button:hover {
+    background-color: #6e0099;
+}
+
+.main-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 80%;
+    margin-top: 20px;
+    padding: 20px;
+    background: linear-gradient(to right, #4022e9, rgb(0, 12, 224));
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.profile-info {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.first-container {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.profile-photo {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+}
+
+.icon {
+    height: 130px;
+    border-radius: 50%;
+}
+
+.profile-details {
+    flex: 3;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 20px;
+}
+
+.logout-form {
+    margin-top: 20px;
+}
+
+.logout-form input[type="submit"] {
+    background-color: #84002c;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.logout-form input[type="submit"]:hover {
+    background-color: #9f0236;
+}
+
+.stocks-section {
+    width: 100%;
+}
+
+.stocks-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.stocks-table th, .stocks-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+.stocks-table th {
+    background-color: #120173;
+    font-weight: bold;
+}
+
+.sell-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.sell-container p {
+    margin: 0;
+    font-weight: bold;
+}
+
+.unique-cell {
+    text-align: center;
+}
+
+.unique-input {
+    border: 1px solid #000000;
+    border-radius: 6px;
+    width: 50%;
+    box-sizing: border-box;
+}
+
+.unique-input:focus {
+    border-color: #1c1c1c;
+    outline: none;
+}
+
+.sell-container input[type="submit"] {
+    background-color: #410858;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.sell-container input[type="submit"]:hover {
+    background-color: #6e0099;
+
 }

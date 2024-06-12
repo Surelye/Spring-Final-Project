@@ -6,9 +6,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import ssu.ru.stocks.models.Stock;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface StocksRepository extends JpaRepository<Stock, Integer> {
+    List<Stock> findAllByOrderByCompanyName();
     Optional<Stock> findByCompanyName(String companyName);
 
     @Modifying

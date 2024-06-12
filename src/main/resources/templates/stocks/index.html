@@ -3,158 +3,85 @@
 <head>
     <meta charset="UTF-8" xmlns:th="http://www.thymeleaf.org">
     <title>Котировки акций</title>
-<!--    <link rel="stylesheet" href="/css/top_right.css">-->
-    <style>
-        /* Body Styles */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
-
-        /* Table Styles */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-        }
-
-        th {
-            background-color: #f2f2f2;
-            font-weight: bold;
-        }
-
-        /* Form Styles */
-        form {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-
-        select, input[type="number"], input[type="submit"] {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-
-        input[type="submit"] {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-
-        input[type="submit"]:hover {
-            background-color: #45a049;
-        }
-
-        /* Alert Styles */
-        .alert {
-            background-color: #f44336;
-            color: white;
-            padding: 10px;
-            margin-bottom: 20px;
-            border-radius: 4px;
-        }
-
-        /* Link Styles */
-        a.top-right {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            padding: 10px;
-            background-color: #4CAF50;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-        }
-
-        a.top-right:hover {
-            background-color: #45a049;
-        }
-    </style>
+    <link rel="stylesheet" href="/css/stock_page.css">
 </head>
 <body>
 
-<div th:switch="${fullBuyout}">
-    <div th:case="${false}">
-        <table style="text-align: center">
-            <thead>
-            <tr>
-                <th scope="col">Название компании</th>
-                <th scope="col">Стоимость покупки</th>
-                <th scope="col">Стоимость продажи</th>
-                <th scope="col">Количество доступных акций</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:if="${stock.getQuantity() != 0}" th:each="stock : ${stocks}">
-                <td th:text="${stock.getCompanyName()}">companyName</td>
-                <td th:text="${#numbers.formatDecimal(stock.getPurchasePrice(), 1, 2)}">purchasePrice</td>
-                <td th:text="${#numbers.formatDecimal(stock.getSellPrice(), 1, 2)}">sellPrice</td>
-                <td th:text="${stock.getQuantity()}">quantity</td>
-            </tr>
-            </tbody>
-        </table>
-        <div th:switch="${isOpen}">
-            <div th:case="${true}">
-                <br>
-                <form th:method="POST" th:action="@{/stocks/{id}/purchase(id=${account.getId()})}">
-                    <label for="companyAndPrice">Акции какой компании Вы желаете приобрести?</label>
-                    <select id="companyAndPrice" name="companyAndPrice"
-                            onchange="calculateStockPurchasePrice(); checkEnoughBalance()">
-                        <option th:if="${stock.getQuantity() != 0}" th:each="stock : ${stocks}"
-                                th:value="${stock.getCompanyName()} + '|' + ${stock.getPurchasePrice()}"
-                                th:text="${stock.getCompanyName()} + ' (' +
-                                    ${#numbers.formatDecimal(stock.getPurchasePrice(), 1, 2)} + ')'">
-                            companyNameAndStockPurchasePrice
-                        </option>
-                    </select>
-                    <br>
-                    <br>
-                    <label for="amount">Какое количество акций вы желаете приобрести?</label>
-                    <input type="number" min="1" name="amount" id="amount"
-                           onchange="calculateStockPurchasePrice(); checkEnoughBalance()">
-                    <input type="submit" value="Приобрести">
-                </form>
-                <p th:text="'Комиссия брокера составляет ' + ${account.getCommission()} + '% (включена в сделку).'"
-                   th:value="${account.getCommission()}"></p>
-                <input type="hidden" id="commission" th:value="${account.getCommission()}">
-                <p id="purchase-price">Стоимость акций:</p>
-                <input type="hidden" id="purchase-price-holder">
-            </div>
-            <div th:case="*">
-                <p th:text="'В данный момент биржа закрыта. Возвращайтесь с 10 до 22 по МСК.'">alert</p>
-            </div>
-        </div>
-    </div>
-    <div th:case="*">
-        <p th:text="'В данный момент акций нет.'">noStocksInfo</p>
-    </div>
+<div class="header">
+    <img src="/images/logo.png" alt="Logo">
+    <a class="top-right" href="/profile" th:text="'Перейти к профилю'">Перейти к профилю</a>
 </div>
 
-<p th:text="'Баланс вашего аккаунта составляет ' + ${#numbers.formatDecimal(account.getBalance(), 1, 2)} + ' рублей.'">
-    balance</p>
-<input type="hidden" id="balance-holder" th:value="${account.getBalance()}">
+<div class="main-container">
+    <div th:switch="${fullBuyout}">
+        <div th:case="${false}">
+            <table>
+                <thead>
+                <tr class="for-col">
+                    <th scope="col">Название компании</th>
+                    <th scope="col">Стоимость покупки</th>
+                    <th scope="col">Стоимость продажи</th>
+                    <th scope="col">Количество доступных акций</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${stock.getQuantity() != 0}" th:each="stock : ${stocks}">
+                    <td th:text="${stock.getCompanyName()}">companyName</td>
+                    <td th:text="${#numbers.formatDecimal(stock.getPurchasePrice(), 1, 2)}">purchasePrice</td>
+                    <td th:text="${#numbers.formatDecimal(stock.getSellPrice(), 1, 2)}">sellPrice</td>
+                    <td th:text="${stock.getQuantity()}">quantity</td>
+                </tr>
+                </tbody>
+            </table>
+            <div th:switch="${isOpen}">
+                <div th:case="${true}">
+                    <form th:method="POST" th:action="@{/stocks/{id}/purchase(id=${account.getId()})}">
+                        <div class="form-section">
+                            <label for="companyAndPrice">Акции какой компании Вы желаете приобрести?</label>
+                            <select id="companyAndPrice" name="companyAndPrice"
+                                    onchange="calculateStockPurchasePrice(); checkEnoughBalance()">
+                                <option th:if="${stock.getQuantity() != 0}" th:each="stock : ${stocks}"
+                                        th:value="${stock.getCompanyName()} + '|' + ${stock.getPurchasePrice()}"
+                                        th:text="${stock.getCompanyName()} + ' (' +
+                                            ${#numbers.formatDecimal(stock.getPurchasePrice(), 1, 2)} + ')'">
+                                    companyNameAndStockPurchasePrice
+                                </option>
+                            </select>
+                            <br>
+                            <label for="amount">Какое количество акций вы желаете приобрести?</label>
+                            <input type="number" min="1" name="amount" id="amount"
+                                   onchange="calculateStockPurchasePrice(); checkEnoughBalance()">
+                            <input type="submit" value="Приобрести">
+                        </div>
+                        <div class="form-section">
+                            <p th:text="'Комиссия брокера составляет ' +
+                                ${#numbers.formatDecimal(account.getCommission(), 1, 2)} + '% (включена в сделку).'"
+                               th:value="${account.getCommission()}"></p>
+                            <input type="hidden" id="commission" th:value="${account.getCommission()}">
+                            <p id="purchase-price">Стоимость акций:</p>
+                            <input type="hidden" id="purchase-price-holder">
+                        </div>
+                    </form>
+                </div>
+                <div th:case="*">
+                    <p class="alert" th:text="'В данный момент биржа закрыта. Возвращайтесь с 10 до 22 по МСК.'">alert</p>
+                </div>
+            </div>
+        </div>
+        <div th:case="*">
+            <p th:text="'В данный момент акций нет.'">noStocksInfo</p>
+        </div>
+    </div>
+
+    <p th:text="'Баланс вашего аккаунта составляет ' + ${#numbers.formatDecimal(account.getBalance(), 1, 2)} + ' рублей.'">
+        balance</p>
+    <input type="hidden" id="balance-holder" th:value="${account.getBalance()}">
+
+    <p class="hidden alert" id="message"></p> <!-- Изменено -->
+</div>
+
 <script src="/js/calculatePurchasePrice.js"></script>
 <script src="/js/checkEnoughBalance.js"></script>
-
-<a class="top-right" href="/profile" th:text="'Перейти к профилю'">text</a>
-
-<p class="hidden" id="message">
 
 </body>
 </html>

@@ -3,9 +3,11 @@ package ssu.ru.stocks.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ssu.ru.stocks.models.Account;
 import ssu.ru.stocks.models.AccountStock;
 import ssu.ru.stocks.repositories.AccountStockRepository;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,7 +24,9 @@ public class AccountStockService {
 
     @Transactional(readOnly = true)
     public List<AccountStock> getAllByAccountId(int accountId) {
-        return accountStockRepository.findAllByAccountId(accountId);
+        List<AccountStock> accountStocks = accountStockRepository.findAllByAccountId(accountId);
+        accountStocks.sort(Comparator.comparingInt(AccountStock::getStockId));
+        return accountStocks;
     }
 
     public void saveOrUpdate(int accId, int stockId, int quantity) {
