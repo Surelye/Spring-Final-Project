@@ -7,14 +7,12 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ssu.ru.stocks.models.Account;
+import ssu.ru.stocks.models.Status;
 import ssu.ru.stocks.repositories.AccountsRepository;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
-
-import static ssu.ru.stocks.models.Status.*;
-import static ssu.ru.stocks.util.Constants.*;
 
 @Service
 @Transactional
@@ -30,20 +28,24 @@ public class AccountsService {
         this.random = random;
     }
 
+    public double getRandomDoubleInRange(double lb, double ub) {
+        return lb + random.nextDouble(ub - lb);
+    }
+
+    public void updateCommissionEach(Account account) {
+        for (Status status : Status.values()) {
+            if (account.getStatus() == status) {
+                accountsRepository.updateCommission(account.getId(),
+                        getRandomDoubleInRange(status.getLowerBound(), status.getUpperBound()));
+            }
+        }
+    }
+
     @Scheduled(cron = "0 0 0 * * *", zone = "Europe/Moscow")
     public void updateCommission() {
         List<Account> accounts = accountsRepository.findAll();
         for (Account account : accounts) {
-            if (account.getStatus() == STARTER) {
-                accountsRepository.updateCommission(account.getId(),
-                        STARTER_LB + random.nextDouble(STARTER_UB - STARTER_LB));
-            } else if (account.getStatus() == PRO) {
-                accountsRepository.updateCommission(account.getId(),
-                        PRO_LB + random.nextDouble(PRO_UB - PRO_LB));
-            } else if (account.getStatus() == PREMIUM) {
-                accountsRepository.updateCommission(account.getId(),
-                        PREMIUM_LB + random.nextDouble(PREMIUM_UB - PREMIUM_LB));
-            }
+            updateCommissionEach(account);
         }
         log.info("Произшло обновление комиссионного процента");
     }

@@ -87,8 +87,7 @@ public class StocksService {
     }
 
     public boolean isStockExchangeAvailable() {
-        return true;
-//        int hour = LocalTime.now(ZoneId.of("Europe/Moscow")).getHour();
-//        return (10 <= hour && hour < 22);
+        int hour = LocalTime.now(ZoneId.of("Europe/Moscow")).getHour();
+        return (10 <= hour && hour < 22);
     }
 }
