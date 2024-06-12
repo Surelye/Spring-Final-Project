@@ -48,7 +48,7 @@
                 <p>Вы ещё не приобрели ни одной акции.</p>
             </div>
             <div th:case="*">
-                <b>Список ваших акций: </b>
+                <b>Список Ваших акций: </b>
                 <br><br>
                 <form th:method="POST" th:action="@{/stocks/{id}/sell(id=${account.getId()})}">
                     <table class="stocks-table">
